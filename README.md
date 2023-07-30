@@ -1,3 +1,4 @@
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -68,3 +69,7 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+=======
+# News-App
+"Ideal News" is a sleek and modern news web app built with React, JavaScript, and Bootstrap. Stay informed with real-time updates and a personalized news feed. Effortlessly browse and discover the latest headlines with ease.
+ c0b335cc3dfc637a8dc6b53fc232f648bc5724d4
