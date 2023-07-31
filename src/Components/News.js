@@ -1,35 +1,24 @@
 import React, { Component } from 'react'
 import NewsItem from './NewsItem'
+import Spinner from './Spinner'
+import PropTypes from 'prop-types' //impt
+
 
 export default class News extends Component {
-    // articles = [
-    //     {
-    //         "source": {
-    //             "id": "espn-cric-info",
-    //             "name": "ESPN Cric Info"
-    //         },
-    //         "author": null,
-    //         "title": "PCB hands Umar Akmal three-year ban from all cricket | ESPNcricinfo.com",
-    //         "description": "Penalty after the batsman pleaded guilty to not reporting corrupt approaches | ESPNcricinfo.com",
-    //         "url": "http://www.espncricinfo.com/story/_/id/29103103/pcb-hands-umar-akmal-three-year-ban-all-cricket",
-    //         "urlToImage": "https://a4.espncdn.com/combiner/i?img=%2Fi%2Fcricket%2Fcricinfo%2F1099495_800x450.jpg",
-    //         "publishedAt": "2020-04-27T11:41:47Z",
-    //         "content": "Umar Akmal's troubled cricket career has hit its biggest roadblock yet, with the PCB handing him a ban from all representative cricket for three years after he pleaded guilty of failing to report det… [+1506 chars]"
-    //     },
-    //     {
-    //         "source": {
-    //             "id": "espn-cric-info",
-    //             "name": "ESPN Cric Info"
-    //         },
-    //         "author": null,
-    //         "title": "What we learned from watching the 1992 World Cup final in full again | ESPNcricinfo.com",
-    //         "description": "Wides, lbw calls, swing - plenty of things were different in white-ball cricket back then | ESPNcricinfo.com",
-    //         "url": "http://www.espncricinfo.com/story/_/id/28970907/learned-watching-1992-world-cup-final-full-again",
-    //         "urlToImage": "https://a4.espncdn.com/combiner/i?img=%2Fi%2Fcricket%2Fcricinfo%2F1219926_1296x729.jpg",
-    //         "publishedAt": "2020-03-30T15:26:05Z",
-    //         "content": "Last week, we at ESPNcricinfo did something we have been thinking of doing for eight years now: pretend-live ball-by-ball commentary for a classic cricket match. We knew the result, yes, but we tried… [+6823 chars]"
-    //     }
-    // ]
+
+    
+    static defaultProps={
+        conutry:'in',
+        pageSize:8,
+        category:'general',
+    }
+
+    static propTypes={ 
+        country:PropTypes.string,
+        pageSize:PropTypes.number,
+        category:PropTypes.string,
+        
+    }
 
     constructor() {
         super();
@@ -43,16 +32,18 @@ export default class News extends Component {
 
     //CMD function run right after the render function
     async componentDidMount() {
-        let url = "https://newsapi.org/v2/top-headlines?country=in&apiKey=61bb4eff58f04825bae8e273bdfbd3a7&page=1pageSize=20";
+        let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=61bb4eff58f04825bae8e273bdfbd3a7&page=1&pageSize=${this.props.pageSize}`;
+        this.setState({loading:true});
         let data = await fetch(url)
         let parsedData = await data.json()
         // console.log(parsedData)
-        this.setState({ articles: parsedData.articles, totalResults: parsedData.totalResults });
+        this.setState({ articles: parsedData.articles, totalResults: parsedData.totalResults,loading:false });
     }
 
     handlePrevClick = async () => {
         console.log("Previous")
-        let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=61bb4eff58f04825bae8e273bdfbd3a7&page=${this.state.page - 1}&pageSize=20`;
+        let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=61bb4eff58f04825bae8e273bdfbd3a7&page=${this.state.page - 1}&pageSize=${this.props.pageSize}`;
+        this.setState({loading:true});
         let data = await fetch(url)
         let parsedData = await data.json()
         console.log(parsedData)
@@ -60,7 +51,8 @@ export default class News extends Component {
 
         this.setState({
             page: this.state.page - 1,
-            articles: parsedData.articles
+            articles: parsedData.articles,
+            loading:false
         })
     }
 
@@ -69,19 +61,21 @@ export default class News extends Component {
         //once size reached the next button won't work
         //Math.ceil : give next biggest integer
         //20 is total size of articles
-        if (this.state.page + 1 > Math.ceil(this.state.totalResults/20)) {
+        if (!(this.state.page + 1 > Math.ceil(this.state.totalResults / this.props.pageSize))) {
 
-        }
-        else {
-            let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=61bb4eff58f04825bae8e273bdfbd3a7&page=${this.state.page + 1}&pageSize=20`;
-            let data = await fetch(url)
-            let parsedData = await data.json()
-            console.log(parsedData)
+            let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=61bb4eff58f04825bae8e273bdfbd3a7&page=${this.state.page + 1}&pageSize=${this.props.pageSize}`
+            this.setState({loading:true});
+            let data = await fetch(url);
+            let parsedData = await data.json();
+            // console.log(parsedData)
+           
             this.setState({ articles: parsedData.articles });
 
             this.setState({
                 page: this.state.page + 1,
-                articles: parsedData.articles
+                articles: parsedData.articles,
+                 // when data is loaded the loading become false
+                loading:false
             })
         }
     }
@@ -91,9 +85,12 @@ export default class News extends Component {
             <div>
 
                 <div className="container my-3">
-                    <h2>IdealNews- TopHeadlines</h2>
+                    <h2 className="text-center" style={{margin:'35px 0px'}}>IdealNews - TopHeadlines</h2>
+                    {/* if this.state.loading is true show Spinner otherwise don't show Spinner */}
+                    {this.state.loading && <Spinner/>} 
                     <div className="row">
-                        {this.state.articles.map((element) => {
+                        {/* if this.state.loading is false then show the above content  */}
+                        {!this.state.loading && this.state.articles.map((element) => {
                             // key is the unique element
                             return <div className="col-md-4" key={element.url}>
                                 {/* slice(0,45)  only take first 45 charaacters for showing, so that all of our cards text and title look good and equal */}
@@ -106,7 +103,7 @@ export default class News extends Component {
                 <div className="container d-flex justify-content-between">
 
                     <button disabled={this.state.page <= 1} onClick={this.handlePrevClick} type="button" className="btn btn-dark"> &larr;Previous</button>
-                    <button onClick={this.handleNextClick} type="button" className="btn btn-dark">Next &rarr;</button>
+                    <button disabled={this.state.page + 1 > Math.ceil(this.state.totalResults / this.props.pageSize)} onClick={this.handleNextClick} type="button" className="btn btn-dark">Next &rarr;</button>
                 </div>
             </div>
         )

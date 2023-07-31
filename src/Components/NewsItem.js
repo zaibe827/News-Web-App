@@ -6,7 +6,8 @@ export default class NewsItem extends Component {
         let { title, description, imageUrl, newsUrl } = this.props
         return (
             <div className='my-3'>
-                <div className="card" style={{width: "18rem"}}>
+                                 {/*className='card' style={{width: "18rem"}} */}
+                <div className="card" >
                     {/* if image URL is null run the default URL */}
                     <img src={!imageUrl?"https://www.livemint.com/lm-img/img/2023/07/29/600x338/US_China_Taiwan_Weapons_1690621942541_1690621942849.jpg":imageUrl} className="card-img-top" alt="Unalbe to load" />
                     <div className="card-body">
