@@ -1,3 +1,4 @@
+"Ideal News" is a cutting-edge news web application that delivers the latest and most relevant news to users in a convenient and user-friendly format. Powered by React and JavaScript, this app ensures seamless performance and a dynamic user experience. With a sleek and modern design using Bootstrap, "Ideal News" provides an intuitive interface that makes browsing and discovering news articles a breeze.
 
 # Getting Started with Create React App
 
